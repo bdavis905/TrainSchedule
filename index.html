@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <title>Train Schedule</title>
+      <!-- Bootswatch Styling for Improving the Aesthetics -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/flatly/bootstrap.min.css">
+      <link rel="stylesheet" type="text/css" href="assets/CSS/style.css">
+      <!-- Font Awesome CSS Icons (For cool glyphicons) -->
+      <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">-->
+      <script src="http://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+      <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+      
+      <!-- Code to the JavaScript File -->
+      <!--<script type="text/javascript" src="assets/Javascript/javascript.js"></script>-->
+      <!-- Style to fix the issue of text extending past panel length -->
+      <style>
+         .panel-body a {
+         word-break: break-all;
+         }
+      </style>
+   </head>
+   <body>
+      <!-- Main Bootstrap Search -->
+      <div class="container">
+         <!--Jumbotron for Title -->
+         <div class="jumbotron" style="background-image: url(assets/images/jumbo_background_2.jpg); color: white;">
+            <h1 class="text-center"><strong>Train Schedule</strong></h1>
+            <h4 class="text-center">All Aboard!</h4>
+         </div>
+         <!-- Panel Heading for the current employees box -->
+         <div class="row">
+            <div class="col-sm-12">
+               <div class="panel panel-primary">
+                  <div class="panel-heading">
+                     <h3 class="panel-title"><strong>Current Train Schedule</strong></h3>
+                  </div>
+                  <table>
+                  <table  id="theTable" class ="table table-hover" style="width:100%" >
+                     <tr>
+                        <th>Train Name</th>
+                        <th>Destination</th>
+                        <th>Frequency (minutes)</th>
+                        <th>Next Arrival</th>
+                        <th>Minutes Away</th>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+         </div>
+         <!-- Row for adding new trains -->
+         <div class="row">
+            <div class="col-sm-12">
+               <br>
+               <div class="panel panel-primary">
+                  <div class="panel-heading">
+                     <h3 class="panel-title"><strong>   Add Train</strong></h3>
+                  </div>
+                  <div class="panel-body">
+                     <!-- Here we create an HTML Form for handling the inputs-->
+                     <form role="form">
+                        <div class="form-group">
+                           <label for="trainInput">Train Name</label>
+                           <input type="text" class="form-control" id="trainInput">
+                        </div>
+                        <div class="form-group">
+                           <label for="destinationInput">Destination</label>
+                           <input type="text" class="form-control" id="destinationInput">
+                        </div>
+                        <div class="form-group">
+                           <label for="firstTrainTimeInput">First Train Time (HH:MM - Military Time)</label>
+                           <input type="time" class="form-control" id="firstTrainTimeInput">
+                        </div>
+                        <div class="form-group">
+                           <label for="frequencyInput">Frequency (In Minutes)</label>
+                           <input type="number" class="form-control" id="frequencyInput">
+                        </div>
+                        <!-- Here we have our final submit button -->
+                        <button type="submit" class="btn btn-primary" id="add-train">Add Train</button>
+                        <button type="button" class="btn btn-primary" id="clearAll">Clear</button>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+         
+         <!-- Footer Region -->
+         <div class="row">
+            <div class="col-sm-12">
+               <!-- Line Break followed by closing -->
+               <hr>
+               <h5 class="text-center"><small>Copyright:  Brad Davis 2018<i class="fas fa-train"></i></small></h5>
+            </div>
+         </div>
+      </div>
+      <script>
+var config = {
+    apiKey: "AIzaSyBdL4z09_D3ycnwoUhnjLFYNQ52gB2MNcQ",
+    authDomain: "trainschedule-2b2d8.firebaseapp.com",
+    databaseURL: "https://trainschedule-2b2d8.firebaseio.com",
+    projectId: "trainschedule-2b2d8",
+    storageBucket: "trainschedule-2b2d8.appspot.com",
+    messagingSenderId: "374546864151"
+};
+
+firebase.initializeApp(config);
+
+var database = firebase.database();
+var trainName = "";
+var destination = "";
+var firstTrainTime = 0;
+var frequency = 0;
+
+
+
+$("#add-train").on("click", function(event) {
+    event.preventDefault();
+
+   trainName = $("#trainInput").val().trim();
+   destination = $("#destinationInput").val().trim();
+   firstTrainTime = parseInt($("#firstTrainTimeInput").val().trim());
+   frequency = parseInt($("#frequencyInput").val().trim());
+
+   console.log(trainName);
+   console.log(destination);
+   console.log(firstTrainTime);
+   console.log(frequency);
+
+
+   firebase.database().ref().push({
+   trainName:trainName,
+   destination:destination,
+   firstTrainTime:firstTrainTime,
+   frequency:frequency
+   
+})
+})
+
+firebase.database().ref().on("value",function(snapshot){
+   
+var sv = snapshot.val();  
+
+console.log(snapshot.val().trainName);
+console.log("Hey");
+console.log(sv.destination);
+console.log(sv.firstTrainTime);
+console.log(sv.frequency);
+
+   
+   $("#theTable > tbody").append(
+    "<tr><td>" + trainName + 
+    "</td><td>" + destination + 
+    "</td><td>" + frequency + 
+    "</td><td>" + firstTrainTime + 
+    "</td><td>" + trainName + 
+    "</td><td>" + trainName + 
+    "</td></tr>");
+})
+
+      </script>
+   </body>
+</html>
